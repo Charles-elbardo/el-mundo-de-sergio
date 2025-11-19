@@ -14,9 +14,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let synth = window.speechSynthesis;
   let voices = [];
+  
+  // VARIABLE CLAVE: Aquí guardaremos el temporizador para poder cancelarlo
+  let englishTimeout = null; 
 
   // ===========================================================
-  // MEGA BASE DE DATOS (Categorías expandidas)
+  // MEGA BASE DE DATOS (Más de 130 elementos)
   // ===========================================================
   const DATABASE = [
     // --- VEHÍCULOS ---
@@ -43,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { cat: "vehicle", es: "Canoa", en: "Canoe", emoji: "🛶" },
     { cat: "vehicle", es: "Velero", en: "Sailboat", emoji: "⛵" },
     { cat: "vehicle", es: "Paracaídas", en: "Parachute", emoji: "🪂" },
+    { cat: "vehicle", es: "Globo aerostático", en: "Hot Air Balloon", emoji: "🎈" },
 
     // --- ANIMALES ---
     { cat: "animal", es: "León", en: "Lion", emoji: "🦁" },
@@ -78,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { cat: "animal", es: "Ballena", en: "Whale", emoji: "🐳" },
     { cat: "animal", es: "Delfín", en: "Dolphin", emoji: "🐬" },
     { cat: "animal", es: "Cangrejo", en: "Crab", emoji: "🦀" },
+    { cat: "animal", es: "Cocodrilo", en: "Crocodile", emoji: "🐊" },
 
     // --- ESPACIO ---
     { cat: "space", es: "Luna", en: "Moon", emoji: "🌙" },
@@ -91,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { cat: "space", es: "Telescopio", en: "Telescope", emoji: "🔭" },
     { cat: "space", es: "Galaxia", en: "Galaxy", emoji: "🌌" },
     { cat: "space", es: "Satélite", en: "Satellite", emoji: "🛰️" },
+    { cat: "space", es: "Agujero Negro", en: "Black Hole", emoji: "⚫" },
 
     // --- NATURALEZA ---
     { cat: "nature", es: "Volcán", en: "Volcano", emoji: "🌋" },
@@ -108,6 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { cat: "nature", es: "Tornado", en: "Tornado", emoji: "🌪️" },
     { cat: "nature", es: "Montaña", en: "Mountain", emoji: "🏔️" },
     { cat: "nature", es: "Desierto", en: "Desert", emoji: "🏜️" },
+    { cat: "nature", es: "Playa", en: "Beach", emoji: "🏖️" },
 
     // --- CUERPO / OBJETOS / ROPA ---
     { cat: "body", es: "Ojo", en: "Eye", emoji: "👁️" },
@@ -128,6 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
     { cat: "body", es: "Reloj", en: "Watch", emoji: "⌚" },
     { cat: "body", es: "Corona", en: "Crown", emoji: "👑" },
     { cat: "body", es: "Mochila", en: "Backpack", emoji: "🎒" },
+    { cat: "body", es: "Pelota", en: "Ball", emoji: "⚽" },
+    { cat: "body", es: "Libro", en: "Book", emoji: "📚" },
 
     // --- COMIDA ---
     { cat: "food", es: "Pizza", en: "Pizza", emoji: "🍕" },
@@ -149,6 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { cat: "food", es: "Queso", en: "Cheese", emoji: "🧀" },
     { cat: "food", es: "Tarta", en: "Cake", emoji: "🍰" },
     { cat: "food", es: "Caramelo", en: "Candy", emoji: "🍬" },
+    { cat: "food", es: "Galleta", en: "Cookie", emoji: "🍪" },
 
     // --- TRÁFICO (y tus PNGs) ---
     { cat: "traffic", es: "Semáforo", en: "Traffic Light", emoji: "🚦" },
@@ -214,14 +224,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
 
   function speak(text, lang = "es-ES") {
-    if (synth.speaking) synth.cancel();
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = lang;
-    utter.rate = 0.95; 
+    utter.rate = 0.9; 
     utter.pitch = 1.05;
-    // Intentar usar voz de Google si existe
+    
     const preferred = voices.find(v => v.lang.includes(lang) && v.name.includes("Google"));
     if (preferred) utter.voice = preferred;
+    
     synth.speak(utter);
   }
 
@@ -233,11 +243,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function findItem(text) {
     const t = normalize(text);
     
-    // 1. Búsqueda exacta (por español o inglés)
+    // 1. Búsqueda exacta
     const exact = DATABASE.find(item => normalize(item.es).includes(t) || normalize(item.en).includes(t));
     if (exact) return exact;
 
-    // 2. Búsqueda por categoría (mapeo de palabras clave a categorías de botones)
+    // 2. Búsqueda por categoría
     const catMap = {
       "animal": "animal", "bicho": "animal", "mascota": "animal",
       "vehiculo": "vehicle", "coche": "vehicle", "transporte": "vehicle",
@@ -259,6 +269,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderItem(item) {
+    // 1. LIMPIEZA DE AUDIO FANTASMA
+    // Si había una palabra en inglés pendiente de decir, la cancelamos
+    if (englishTimeout) {
+      clearTimeout(englishTimeout);
+      englishTimeout = null;
+    }
+    // Cortamos cualquier sonido que esté sonando ahora mismo
+    synth.cancel();
+
+    // 2. LIMPIEZA VISUAL
     ui.placeholder.classList.add("hidden");
     ui.emojiContainer.classList.add("hidden");
     ui.imageContainer.classList.add("hidden");
@@ -266,16 +286,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Función para mostrar datos y hablar
     const showData = () => {
-      // Muestra ES | EN
       ui.caption.innerHTML = `${item.es.toUpperCase()} <span style='color:#aaa; margin:0 8px'>|</span> ${item.en.toUpperCase()}`;
       ui.caption.classList.remove("hidden");
       
       playSound("success");
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
       
-      // Habla en español, espera, habla en inglés
+      // SECUENCIA DE VOZ ROBUSTA
+      // Hablamos en español inmediatamente
       speak(item.es, "es-ES");
-      setTimeout(() => speak(item.en, "en-US"), 1800);
+      
+      // Programamos el inglés y guardamos la referencia para poder cancelar si se pulsa otro botón
+      englishTimeout = setTimeout(() => {
+        speak(item.en, "en-US");
+      }, 2000); // 2 segundos de margen para que no se monte
     };
 
     // Lógica imagen vs emoji
@@ -287,7 +311,6 @@ document.addEventListener("DOMContentLoaded", () => {
         showData();
       };
       img.onerror = () => {
-        // Si falla la carga (ej: no está el archivo), usa emoji
         ui.emojiContainer.textContent = item.emoji;
         ui.emojiContainer.classList.remove("hidden");
         showData();
@@ -302,17 +325,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Eventos ---
   
-  // Click en botones de categoría
   ui.grid.addEventListener("click", (e) => {
     const btn = e.target.closest(".card-btn");
     if (!btn) return;
     
-    // Efecto visual click
     btn.style.transform = "scale(0.9)";
     setTimeout(() => btn.style.transform = "", 150);
     playSound("click");
 
-    // Buscar aleatorio de esa categoría
     const cat = btn.dataset.category;
     const items = DATABASE.filter(i => i.cat === cat);
     if (items.length > 0) {
@@ -320,7 +340,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Click en Empezar (Bienvenida con Voz)
   ui.btnStart.addEventListener("click", () => {
     ui.overlay.style.opacity = 0;
     setTimeout(() => ui.overlay.style.display = "none", 500);
@@ -328,13 +347,13 @@ document.addEventListener("DOMContentLoaded", () => {
     loadVoices();
     playSound("success");
     
-    // SALUDO NATURAL POR VOZ
+    // Limpiar cualquier cola anterior
+    synth.cancel();
     setTimeout(() => {
       speak("¡Hola Sergio! Bienvenido a tu mundo. ¿A qué vamos a jugar hoy?");
     }, 300);
   });
 
-  // Micrófono
   if (window.SpeechRecognition || window.webkitSpeechRecognition) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
@@ -343,6 +362,9 @@ document.addEventListener("DOMContentLoaded", () => {
     recognition.onstart = () => {
       ui.mic.classList.add("listening");
       ui.status.textContent = "Te escucho...";
+      // Si habla, cancelamos cualquier audio pendiente
+      if (englishTimeout) clearTimeout(englishTimeout);
+      synth.cancel();
     };
     recognition.onend = () => {
       ui.mic.classList.remove("listening");
@@ -352,7 +374,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const text = e.results[0][0].transcript;
       const item = findItem(text);
       if (item) renderItem(item);
-      else speak("No te he entendido bien, Sergio. Prueba otra vez.");
+      else speak("No te he entendido bien, Sergio.");
     };
 
     ui.mic.addEventListener("click", () => {
