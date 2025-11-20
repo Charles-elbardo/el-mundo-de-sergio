@@ -20,14 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // BASE DE DATOS
   // ===========================================================
   const DATABASE = [
-    // --- TRÁFICO (Según tu imagen) ---
-    // Prioridad: img/signals/nombre_archivo.png -> Emoji
+    // --- TRÁFICO (Nombres exactos según tu renombramiento) ---
     { cat: "traffic", es: "Adelantamiento Prohibido", en: "No Overtaking", emoji: "🚗", image: "img/signals/adelantamiento.png" },
     { cat: "traffic", es: "Ceda el Paso", en: "Yield", emoji: "▽", image: "img/signals/ceda.png" },
     { cat: "traffic", es: "Circulación en dos sentidos", en: "Two-way traffic", emoji: "⬆️⬇️", image: "img/signals/dos_sentidos.png" },
     { cat: "traffic", es: "Curva a la derecha", en: "Right Curve", emoji: "↪️", image: "img/signals/curva_derecha.png" },
     { cat: "traffic", es: "Curva a la izquierda", en: "Left Curve", emoji: "↩️", image: "img/signals/curva_izquierda.png" },
-    { cat: "traffic", es: "Curvas Peligrosas", en: "Winding Road", emoji: "〰️", image: "img/signals/curvas_derecha.png" }, // Usamos genérico si no distinguimos dcha/izq en voz
+    { cat: "traffic", es: "Curvas Peligrosas", en: "Winding Road", emoji: "〰️", image: "img/signals/curvas_derecha.png" },
     { cat: "traffic", es: "Prohibido Ciclomotores", en: "No Mopeds", emoji: "🛵🚫", image: "img/signals/prohibido_motos.png" },
     { cat: "traffic", es: "Prohibido Bicicletas", en: "No Bicycles", emoji: "🚳", image: "img/signals/prohibido_bicis.png" },
     { cat: "traffic", es: "Entrada Prohibida Peatones", en: "No Pedestrians", emoji: "🚷", image: "img/signals/prohibido_peatones.png" },
@@ -194,16 +193,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function findItem(text) {
     const t = normalize(text);
     
-    // 1. CASO ESPECIAL: Reconocimiento de voz para "Chase"
     if (t.includes("cheis") || t.includes("cheys") || t.includes("chays") || t.includes("chase")) {
       return DATABASE.find(i => i.en === "Chase");
     }
 
-    // 2. Búsqueda exacta
     const exact = DATABASE.find(item => normalize(item.es).includes(t) || normalize(item.en).includes(t));
     if (exact) return exact;
 
-    // 3. Búsqueda por categoría
     const catMap = {
       "animal": "animal", "bicho": "animal",
       "vehiculo": "vehicle", "coche": "vehicle",
@@ -247,7 +243,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 1100);
     };
 
-    // Lógica de Imagen con Fallback a Emoji
+    // --- LÓGICA ESTRICTA DE IMÁGENES ---
+    // Si el ítem tiene una imagen definida (item.image), intentamos cargarla.
+    // Si falla, MOSTRAREMOS UN ERROR en la consola, pero NO el emoji.
+    // Así forzamos a ver si la imagen carga o no.
     if (item.image) {
       const img = new Image();
       img.onload = () => {
@@ -256,13 +255,15 @@ document.addEventListener("DOMContentLoaded", () => {
         showData();
       };
       img.onerror = () => {
-        console.log("No se encontró imagen, usando emoji para: " + item.es);
-        ui.emojiContainer.textContent = item.emoji;
-        ui.emojiContainer.classList.remove("hidden");
-        showData();
+        console.error("ERROR FATAL: No se encuentra la imagen: " + item.image);
+        // AQUÍ ANTES PONÍAMOS EL EMOJI. AHORA NO HACEMOS NADA (O mostramos texto de error)
+        ui.status.textContent = "Error: No encuentro la imagen PNG 😢";
+        // Descomenta la siguiente línea si quieres que al menos salga el texto aunque no haya imagen:
+        // showData(); 
       };
       img.src = item.image;
     } else {
+      // Si no hay imagen definida en la base de datos, usamos Emoji
       ui.emojiContainer.textContent = item.emoji;
       ui.emojiContainer.classList.remove("hidden");
       showData();
