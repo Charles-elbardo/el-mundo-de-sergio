@@ -17,37 +17,38 @@ document.addEventListener("DOMContentLoaded", () => {
   let englishTimeout = null; 
 
   // ===========================================================
-  // BASE DE DATOS
+  // BASE DE DATOS (SEÑALES SIN EMOJIS)
   // ===========================================================
   const DATABASE = [
-    // --- TRÁFICO (Nombres exactos según tu renombramiento) ---
-    { cat: "traffic", es: "Adelantamiento Prohibido", en: "No Overtaking", emoji: "🚗", image: "img/signals/adelantamiento.png" },
-    { cat: "traffic", es: "Ceda el Paso", en: "Yield", emoji: "▽", image: "img/signals/ceda.png" },
-    { cat: "traffic", es: "Circulación en dos sentidos", en: "Two-way traffic", emoji: "⬆️⬇️", image: "img/signals/dos_sentidos.png" },
-    { cat: "traffic", es: "Curva a la derecha", en: "Right Curve", emoji: "↪️", image: "img/signals/curva_derecha.png" },
-    { cat: "traffic", es: "Curva a la izquierda", en: "Left Curve", emoji: "↩️", image: "img/signals/curva_izquierda.png" },
-    { cat: "traffic", es: "Curvas Peligrosas", en: "Winding Road", emoji: "〰️", image: "img/signals/curvas_derecha.png" },
-    { cat: "traffic", es: "Prohibido Ciclomotores", en: "No Mopeds", emoji: "🛵🚫", image: "img/signals/prohibido_motos.png" },
-    { cat: "traffic", es: "Prohibido Bicicletas", en: "No Bicycles", emoji: "🚳", image: "img/signals/prohibido_bicis.png" },
-    { cat: "traffic", es: "Entrada Prohibida Peatones", en: "No Pedestrians", emoji: "🚷", image: "img/signals/prohibido_peatones.png" },
-    { cat: "traffic", es: "Entrada Prohibida", en: "No Entry", emoji: "⛔", image: "img/signals/prohibido_entrada.png" },
-    { cat: "traffic", es: "Estacionamiento Prohibido", en: "No Parking", emoji: "🚫", image: "img/signals/prohibido_estacionar.png" },
-    { cat: "traffic", es: "Estrechamiento de calzada", en: "Road Narrows", emoji: "⚠️", image: "img/signals/estrechamiento.png" },
-    { cat: "traffic", es: "Giro derecha prohibido", en: "No Right Turn", emoji: "🚫↪️", image: "img/signals/no_giro_derecha.png" },
-    { cat: "traffic", es: "Giro izquierda prohibido", en: "No Left Turn", emoji: "🚫↩️", image: "img/signals/no_giro_izquierda.png" },
-    { cat: "traffic", es: "Intersección con prioridad", en: "Intersection priority", emoji: "⚠️", image: "img/signals/interseccion.png" },
-    { cat: "traffic", es: "Obras", en: "Roadworks", emoji: "🚧", image: "img/signals/obras.png" },
-    { cat: "traffic", es: "Prohibido Parar", en: "No Stopping", emoji: "❌", image: "img/signals/prohibido_parar.png" },
-    { cat: "traffic", es: "Parking", en: "Parking", emoji: "🅿️", image: "img/signals/parking.png" },
-    { cat: "traffic", es: "Paso a nivel con barreras", en: "Level crossing with gates", emoji: "🚧🚂", image: "img/signals/tren_barreras.png" },
-    { cat: "traffic", es: "Paso a nivel sin barreras", en: "Level crossing", emoji: "🚂", image: "img/signals/tren.png" },
-    { cat: "traffic", es: "Animales en libertad", en: "Wild Animals", emoji: "🦌", image: "img/signals/animales.png" },
-    { cat: "traffic", es: "Paso de Peatones", en: "Pedestrian Crossing", emoji: "🚶", image: "img/signals/peatones.png" },
-    { cat: "traffic", es: "Prioridad sentido contrario", en: "Oncoming priority", emoji: "⬆️⬇️", image: "img/signals/prioridad_contrario.png" },
-    { cat: "traffic", es: "Rotonda", en: "Roundabout", emoji: "🔄", image: "img/signals/rotonda.png" },
-    { cat: "traffic", es: "Sentido Obligatorio", en: "Mandatory Direction", emoji: "➡", image: "img/signals/sentido_obligatorio.png" },
-    { cat: "traffic", es: "Señal de STOP", en: "Stop Sign", emoji: "🛑", image: "img/signals/stop.png" },
-    { cat: "traffic", es: "Viento Transversal", en: "Crosswind", emoji: "🌬️", image: "img/signals/viento.png" },
+    // --- TRÁFICO ---
+    // He borrado la propiedad 'emoji' de aquí. Si la imagen falla, no saldrá nada.
+    { cat: "traffic", es: "Adelantamiento Prohibido", en: "No Overtaking", image: "img/signals/adelantamiento.png" },
+    { cat: "traffic", es: "Ceda el Paso", en: "Yield", image: "img/signals/ceda.png" },
+    { cat: "traffic", es: "Circulación en dos sentidos", en: "Two-way traffic", image: "img/signals/dos_sentidos.png" },
+    { cat: "traffic", es: "Curva a la derecha", en: "Right Curve", image: "img/signals/curva_derecha.png" },
+    { cat: "traffic", es: "Curva a la izquierda", en: "Left Curve", image: "img/signals/curva_izquierda.png" },
+    { cat: "traffic", es: "Curvas Peligrosas", en: "Winding Road", image: "img/signals/curvas_derecha.png" },
+    { cat: "traffic", es: "Prohibido Ciclomotores", en: "No Mopeds", image: "img/signals/prohibido_motos.png" },
+    { cat: "traffic", es: "Prohibido Bicicletas", en: "No Bicycles", image: "img/signals/prohibido_bicis.png" },
+    { cat: "traffic", es: "Entrada Prohibida Peatones", en: "No Pedestrians", image: "img/signals/prohibido_peatones.png" },
+    { cat: "traffic", es: "Entrada Prohibida", en: "No Entry", image: "img/signals/prohibido_entrada.png" },
+    { cat: "traffic", es: "Estacionamiento Prohibido", en: "No Parking", image: "img/signals/prohibido_estacionar.png" },
+    { cat: "traffic", es: "Estrechamiento de calzada", en: "Road Narrows", image: "img/signals/estrechamiento.png" },
+    { cat: "traffic", es: "Giro derecha prohibido", en: "No Right Turn", image: "img/signals/no_giro_derecha.png" },
+    { cat: "traffic", es: "Giro izquierda prohibido", en: "No Left Turn", image: "img/signals/no_giro_izquierda.png" },
+    { cat: "traffic", es: "Intersección con prioridad", en: "Intersection priority", image: "img/signals/interseccion.png" },
+    { cat: "traffic", es: "Obras", en: "Roadworks", image: "img/signals/obras.png" },
+    { cat: "traffic", es: "Prohibido Parar", en: "No Stopping", image: "img/signals/prohibido_parar.png" },
+    { cat: "traffic", es: "Parking", en: "Parking", image: "img/signals/parking.png" },
+    { cat: "traffic", es: "Paso a nivel con barreras", en: "Level crossing with gates", image: "img/signals/tren_barreras.png" },
+    { cat: "traffic", es: "Paso a nivel sin barreras", en: "Level crossing", image: "img/signals/tren.png" },
+    { cat: "traffic", es: "Animales en libertad", en: "Wild Animals", image: "img/signals/animales.png" },
+    { cat: "traffic", es: "Paso de Peatones", en: "Pedestrian Crossing", image: "img/signals/peatones.png" },
+    { cat: "traffic", es: "Prioridad sentido contrario", en: "Oncoming priority", image: "img/signals/prioridad_contrario.png" },
+    { cat: "traffic", es: "Rotonda", en: "Roundabout", image: "img/signals/rotonda.png" },
+    { cat: "traffic", es: "Sentido Obligatorio", en: "Mandatory Direction", image: "img/signals/sentido_obligatorio.png" },
+    { cat: "traffic", es: "Señal de STOP", en: "Stop Sign", image: "img/signals/stop.png" },
+    { cat: "traffic", es: "Viento Transversal", en: "Crosswind", image: "img/signals/viento.png" },
     
     // --- INSTRUMENTOS ---
     { cat: "instrument", es: "Guitarra", en: "Guitar", emoji: "🎸" },
@@ -243,30 +244,39 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 1100);
     };
 
-    // --- LÓGICA ESTRICTA DE IMÁGENES ---
-    // Si el ítem tiene una imagen definida (item.image), intentamos cargarla.
-    // Si falla, MOSTRAREMOS UN ERROR en la consola, pero NO el emoji.
-    // Así forzamos a ver si la imagen carga o no.
+    // --- LÓGICA ESTRICTA DE VISUALIZACIÓN ---
+    // 1. ¿Tiene imagen configurada?
     if (item.image) {
       const img = new Image();
       img.onload = () => {
+        // Si la imagen carga bien, la mostramos
         ui.imageContainer.src = item.image;
         ui.imageContainer.classList.remove("hidden");
         showData();
       };
       img.onerror = () => {
-        console.error("ERROR FATAL: No se encuentra la imagen: " + item.image);
-        // AQUÍ ANTES PONÍAMOS EL EMOJI. AHORA NO HACEMOS NADA (O mostramos texto de error)
-        ui.status.textContent = "Error: No encuentro la imagen PNG 😢";
-        // Descomenta la siguiente línea si quieres que al menos salga el texto aunque no haya imagen:
-        // showData(); 
+        // Si la imagen falla al cargar...
+        console.error("ERROR DE CARGA: " + item.image);
+        
+        // Comprobamos si tiene emoji de respaldo
+        if (item.emoji) {
+           ui.emojiContainer.textContent = item.emoji;
+           ui.emojiContainer.classList.remove("hidden");
+        } else {
+           // SI NO TIENE EMOJI (Caso de señales): Mostramos mensaje de error visual
+           ui.status.textContent = "⚠️ Falta la imagen: " + item.es;
+        }
+        showData();
       };
       img.src = item.image;
-    } else {
-      // Si no hay imagen definida en la base de datos, usamos Emoji
+    } else if (item.emoji) {
+      // 2. Si no tiene imagen pero tiene emoji
       ui.emojiContainer.textContent = item.emoji;
       ui.emojiContainer.classList.remove("hidden");
       showData();
+    } else {
+      // 3. Si no tiene ni imagen ni emoji (No debería pasar)
+      ui.status.textContent = "Error de datos para: " + item.es;
     }
   }
 
