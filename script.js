@@ -20,7 +20,37 @@ document.addEventListener("DOMContentLoaded", () => {
   // BASE DE DATOS
   // ===========================================================
   const DATABASE = [
-    // --- INSTRUMENTOS (Nueva categoría) ---
+    // --- TRÁFICO (Según tu imagen) ---
+    // Prioridad: img/signals/nombre_archivo.png -> Emoji
+    { cat: "traffic", es: "Adelantamiento Prohibido", en: "No Overtaking", emoji: "🚗", image: "img/signals/adelantamiento.png" },
+    { cat: "traffic", es: "Ceda el Paso", en: "Yield", emoji: "▽", image: "img/signals/ceda.png" },
+    { cat: "traffic", es: "Circulación en dos sentidos", en: "Two-way traffic", emoji: "⬆️⬇️", image: "img/signals/dos_sentidos.png" },
+    { cat: "traffic", es: "Curva a la derecha", en: "Right Curve", emoji: "↪️", image: "img/signals/curva_derecha.png" },
+    { cat: "traffic", es: "Curva a la izquierda", en: "Left Curve", emoji: "↩️", image: "img/signals/curva_izquierda.png" },
+    { cat: "traffic", es: "Curvas Peligrosas", en: "Winding Road", emoji: "〰️", image: "img/signals/curvas_derecha.png" }, // Usamos genérico si no distinguimos dcha/izq en voz
+    { cat: "traffic", es: "Prohibido Ciclomotores", en: "No Mopeds", emoji: "🛵🚫", image: "img/signals/prohibido_motos.png" },
+    { cat: "traffic", es: "Prohibido Bicicletas", en: "No Bicycles", emoji: "🚳", image: "img/signals/prohibido_bicis.png" },
+    { cat: "traffic", es: "Entrada Prohibida Peatones", en: "No Pedestrians", emoji: "🚷", image: "img/signals/prohibido_peatones.png" },
+    { cat: "traffic", es: "Entrada Prohibida", en: "No Entry", emoji: "⛔", image: "img/signals/prohibido_entrada.png" },
+    { cat: "traffic", es: "Estacionamiento Prohibido", en: "No Parking", emoji: "🚫", image: "img/signals/prohibido_estacionar.png" },
+    { cat: "traffic", es: "Estrechamiento de calzada", en: "Road Narrows", emoji: "⚠️", image: "img/signals/estrechamiento.png" },
+    { cat: "traffic", es: "Giro derecha prohibido", en: "No Right Turn", emoji: "🚫↪️", image: "img/signals/no_giro_derecha.png" },
+    { cat: "traffic", es: "Giro izquierda prohibido", en: "No Left Turn", emoji: "🚫↩️", image: "img/signals/no_giro_izquierda.png" },
+    { cat: "traffic", es: "Intersección con prioridad", en: "Intersection priority", emoji: "⚠️", image: "img/signals/interseccion.png" },
+    { cat: "traffic", es: "Obras", en: "Roadworks", emoji: "🚧", image: "img/signals/obras.png" },
+    { cat: "traffic", es: "Prohibido Parar", en: "No Stopping", emoji: "❌", image: "img/signals/prohibido_parar.png" },
+    { cat: "traffic", es: "Parking", en: "Parking", emoji: "🅿️", image: "img/signals/parking.png" },
+    { cat: "traffic", es: "Paso a nivel con barreras", en: "Level crossing with gates", emoji: "🚧🚂", image: "img/signals/tren_barreras.png" },
+    { cat: "traffic", es: "Paso a nivel sin barreras", en: "Level crossing", emoji: "🚂", image: "img/signals/tren.png" },
+    { cat: "traffic", es: "Animales en libertad", en: "Wild Animals", emoji: "🦌", image: "img/signals/animales.png" },
+    { cat: "traffic", es: "Paso de Peatones", en: "Pedestrian Crossing", emoji: "🚶", image: "img/signals/peatones.png" },
+    { cat: "traffic", es: "Prioridad sentido contrario", en: "Oncoming priority", emoji: "⬆️⬇️", image: "img/signals/prioridad_contrario.png" },
+    { cat: "traffic", es: "Rotonda", en: "Roundabout", emoji: "🔄", image: "img/signals/rotonda.png" },
+    { cat: "traffic", es: "Sentido Obligatorio", en: "Mandatory Direction", emoji: "➡", image: "img/signals/sentido_obligatorio.png" },
+    { cat: "traffic", es: "Señal de STOP", en: "Stop Sign", emoji: "🛑", image: "img/signals/stop.png" },
+    { cat: "traffic", es: "Viento Transversal", en: "Crosswind", emoji: "🌬️", image: "img/signals/viento.png" },
+    
+    // --- INSTRUMENTOS ---
     { cat: "instrument", es: "Guitarra", en: "Guitar", emoji: "🎸" },
     { cat: "instrument", es: "Piano", en: "Piano", emoji: "🎹" },
     { cat: "instrument", es: "Batería", en: "Drums", emoji: "🥁" },
@@ -32,19 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
     { cat: "instrument", es: "Micrófono", en: "Microphone", emoji: "🎤" },
     { cat: "instrument", es: "Auriculares", en: "Headphones", emoji: "🎧" },
     { cat: "instrument", es: "Xilófono", en: "Xylophone", emoji: "🎹" },
-
-    // --- TRÁFICO (Ruta img/signals/) ---
-    // Asumo nombres estándar. Si tus archivos se llaman diferente, cámbialo aquí.
-    { cat: "traffic", es: "Semáforo", en: "Traffic Light", emoji: "🚦", image: "img/signals/semaforo.png" },
-    { cat: "traffic", es: "Señal de STOP", en: "Stop Sign", emoji: "🛑", image: "img/signals/stop.png" },
-    { cat: "traffic", es: "Paso de Peatones", en: "Crossing", emoji: "🚸", image: "img/signals/peatones.png" },
-    { cat: "traffic", es: "Ceda el Paso", en: "Yield", emoji: "⚠️", image: "img/signals/ceda.png" },
-    { cat: "traffic", es: "Rotonda", en: "Roundabout", emoji: "🔄", image: "img/signals/rotonda.png" },
-    { cat: "traffic", es: "Prohibido", en: "No Entry", emoji: "⛔", image: "img/signals/prohibido.png" },
-    { cat: "traffic", es: "Aparcamiento", en: "Parking", emoji: "🅿️", image: "img/signals/parking.png" },
-    // Fallbacks con emoji por si no tienes todos los PNGs aún
-    { cat: "traffic", es: "Obras", en: "Construction", emoji: "🚧" },
-    { cat: "traffic", es: "Prohibido Bicicletas", en: "No Bikes", emoji: "🚳" },
 
     // --- VEHÍCULOS ---
     { cat: "vehicle", es: "Coche", en: "Car", emoji: "🚗" },
@@ -124,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { cat: "tv", es: "Ninja", en: "Ninja", emoji: "🥷" },
     { cat: "tv", es: "Pirata", en: "Pirate", emoji: "🏴‍☠️" },
     
-    // IMÁGENES REALES (Asegúrate de que los archivos existen en public/img/)
+    // IMÁGENES REALES (Personajes)
     { cat: "tv", es: "Bing", en: "Bing", emoji: "🐰", image: "img/bing.png" },
     { cat: "tv", es: "Chase", en: "Chase", emoji: "👮🐕", image: "img/chase.png" },
     { cat: "tv", es: "Marshall", en: "Marshall", emoji: "🚒🐕", image: "img/paw_marshall.png" }
@@ -178,7 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const t = normalize(text);
     
     // 1. CASO ESPECIAL: Reconocimiento de voz para "Chase"
-    // Los niños (y el motor de voz) suelen pronunciarlo "Cheis" o "Cheys"
     if (t.includes("cheis") || t.includes("cheys") || t.includes("chays") || t.includes("chase")) {
       return DATABASE.find(i => i.en === "Chase");
     }
@@ -210,11 +226,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderItem(item) {
-    // Limpieza de audio y temporizadores
     if (englishTimeout) { clearTimeout(englishTimeout); englishTimeout = null; }
     synth.cancel();
 
-    // Limpieza visual
     ui.placeholder.classList.add("hidden");
     ui.emojiContainer.classList.add("hidden");
     ui.imageContainer.classList.add("hidden");
@@ -228,12 +242,12 @@ document.addEventListener("DOMContentLoaded", () => {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       
       speak(item.es, "es-ES");
-      // TIEMPO DE ESPERA REDUCIDO (1.1 segundos)
       englishTimeout = setTimeout(() => {
         speak(item.en, "en-US");
       }, 1100);
     };
 
+    // Lógica de Imagen con Fallback a Emoji
     if (item.image) {
       const img = new Image();
       img.onload = () => {
@@ -242,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showData();
       };
       img.onerror = () => {
-        // Fallback a emoji si no encuentra imagen
+        console.log("No se encontró imagen, usando emoji para: " + item.es);
         ui.emojiContainer.textContent = item.emoji;
         ui.emojiContainer.classList.remove("hidden");
         showData();
@@ -255,7 +269,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Eventos
   ui.grid.addEventListener("click", (e) => {
     const btn = e.target.closest(".card-btn");
     if (!btn) return;
